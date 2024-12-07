@@ -5,8 +5,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES
     src/Main.cpp
+    src/ArgumentParser.cpp
+    src/FileReader.cpp
 )
 
-set(HEADERS)
+set(HEADERS
+    src/ArgumentParser.hpp
+    src/CalibrationCalculator.hpp
+    src/FileReader.hpp
+)
 
 add_executable(BridgeRepair ${SOURCES} ${HEADERS})
