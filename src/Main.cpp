@@ -5,19 +5,23 @@
 #include <utility>
 #include <regex>
 
-bool evaluateEquation(const std::vector<int> &numbers, const std::vector<char> &operators, long long target) {
+bool evaluateEquation(const std::vector<int> &numbers, const std::vector<std::string> &operators, long long target) {
     long long result = numbers[0];
     for (size_t i = 0; i < operators.size(); ++i) {
-        if (operators[i] == '+') {
+        if (operators[i] == "||") {
+            std::string s1 = std::to_string(result);
+            std::string s2 = std::to_string(numbers[i + 1]);
+            result = std::stoll(s1 + s2);
+        } else if (operators[i] == "+") {
             result += numbers[i + 1];
-        } else if (operators[i] == '*') {
+        } else if (operators[i] == "*") {
             result *= numbers[i + 1];
         }
     }
     return result == target;
 }
 
-void generateOperatorsCombinations(const std::vector<int> &numbers, long long target, size_t index, std::vector<char> &currentOperators, bool &found) {
+void generateOperatorsCombinations(const std::vector<int> &numbers, long long target, size_t index, std::vector<std::string> &currentOperators, bool &found) {
     if (found) return;
     if (index == numbers.size() - 1) {
         if (evaluateEquation(numbers, currentOperators, target)) {
@@ -26,17 +30,21 @@ void generateOperatorsCombinations(const std::vector<int> &numbers, long long ta
         return;
     }
 
-    currentOperators.push_back('+');
+    currentOperators.push_back("||");
     generateOperatorsCombinations(numbers, target, index + 1, currentOperators, found);
     currentOperators.pop_back();
 
-    currentOperators.push_back('*');
+    currentOperators.push_back("+");
+    generateOperatorsCombinations(numbers, target, index + 1, currentOperators, found);
+    currentOperators.pop_back();
+
+    currentOperators.push_back("*");
     generateOperatorsCombinations(numbers, target, index + 1, currentOperators, found);
     currentOperators.pop_back();
 }
 
 bool canProduceTarget(const std::vector<int> &numbers, long long target) {
-    std::vector<char> currentOperators;
+    std::vector<std::string> currentOperators;
     bool found = false;
     generateOperatorsCombinations(numbers, target, 0, currentOperators, found);
     return found;
